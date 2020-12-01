@@ -78,17 +78,17 @@
 |[{n,m}](#{n,m})| m 和 n 均为非负整数，其中n <= m。最少匹配 n 次且最多匹配 m 次。例如，"o{1,3}" 将匹配 "fooooood" 中的前三个 o。'o{0,1}' 等价于 'o?'。请注意在逗号和两个数之间不能有空格。|
 |[?](#非贪婪)| 当该字符紧跟在任何一个其他限制符 (*, +, ?, {n}, {n,}, {n,m}) 后面时，匹配模式是非贪婪的。非贪婪模式尽可能少的匹配所搜索的字符串，而默认的贪婪模式则尽可能多的匹配所搜索的字符串。例如，对于字符串 "oooo"，'o+?' 将匹配单个 "o"，而 'o+' 将匹配所有 'o'。|
 |[.](#.)| 匹配除换行符（\n、\r）之外的任何单个字符。要匹配包括 '\n' 在内的任何字符，请使用像"(.|\\n)"的模式。|
-|(pattern)|匹配 pattern 并获取这一匹配。所获取的匹配可以从产生的 Matches 集合得到，在VBScript 中使用 SubMatches 集合，在JScript 中则使用 $0…$9 属性。要匹配圆括号字符，请使用 '\\(' 或 '\\)'。|
-|(?:pattern)	| 匹配 pattern 但不获取匹配结果，也就是说这是一个非获取匹配，不进行存储供以后使用。这在使用 "或" 字符 (\|) 来组合一个模式的各个部分是很有用。例如， 'industr(?:y\|ies) 就是一个比 'industry\|industries' 更简略的表达式。|
-|(?=pattern)	| 正向肯定预查（look ahead positive assert），在任何匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，"Windows(?=95\|98\|NT\|2000)"能匹配"Windows2000"中的"Windows"，但不能匹配"Windows3.1"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
-|(?!pattern)	| 正向否定预查(negative assert)，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如"Windows(?!95\|98\|NT\|2000)"能匹配"Windows3.1"中的"Windows"，但不能匹配"Windows2000"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
-|(?<=pattern)	| 反向(look behind)肯定预查，与正向肯定预查类似，只是方向相反。例如，"(?<=95\|98\|NT\|2000)Windows"能匹配"2000Windows"中的"Windows"，但不能匹配"3.1Windows"中的"Windows"。|
-|(?<!pattern)	| 反向否定预查，与正向否定预查类似，只是方向相反。例如"(?<!95\|98\|NT\|2000)Windows"能匹配"3.1Windows"中的"Windows"，但不能匹配"2000Windows"中的"Windows"。|
-|x\|y|匹配 x 或 y。例如，'z\|food' 能匹配 "z" 或 "food"。'(z\|f)ood' 则匹配 "zood" 或 "food"。|
-|[xyz]	| 字符集合。匹配所包含的任意一个字符。例如， '[abc]' 可以匹配 "plain" 中的 'a'。|
-|[^xyz]	| 负值字符集合。匹配未包含的任意字符。例如， '[^abc]' 可以匹配 "plain" 中的'p'、'l'、'i'、'n'。|
-|[a-z]	| 字符范围。匹配指定范围内的任意字符。例如，'[a-z]' 可以匹配 'a' 到 'z' 范围内的任意小写字母字符。|
-|[^a-z]	| 负值字符范围。匹配任何不在指定范围内的任意字符。例如，'[^a-z]' 可以匹配任何不在 'a' 到 'z' 范围内的任意字符。|
+|[(pattern)](#(pattern))|匹配 pattern 并获取这一匹配。所获取的匹配可以从产生的 Matches 集合得到，在JScript 中则使用 $1…$9 属性。要匹配圆括号字符，请使用 '\\(' 或 '\\)'。|
+|[(?:pattern)](#(?:pattern))| 匹配 pattern 但不获取匹配结果，也就是说这是一个非获取匹配，不进行存储供以后使用。这在使用 "或" 字符 (\|) 来组合一个模式的各个部分是很有用。例如， 'industr(?:y\|ies) 就是一个比 'industry\|industries' 更简略的表达式。|
+|[(?=pattern)](#(?=pattern))| 正向肯定预查（look ahead positive assert），在任何匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，"Windows(?=95\|98\|NT\|2000)"能匹配"Windows2000"中的"Windows"，但不能匹配"Windows3.1"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
+|[(?!pattern)](#(?!pattern))| 正向否定预查(negative assert)，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如"Windows(?!95\|98\|NT\|2000)"能匹配"Windows3.1"中的"Windows"，但不能匹配"Windows2000"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
+|[(?<=pattern)](#(?<=pattern))| 反向(look behind)肯定预查，与正向肯定预查类似，只是方向相反。例如，"(?<=95\|98\|NT\|2000)Windows"能匹配"2000Windows"中的"Windows"，但不能匹配"3.1Windows"中的"Windows"。|
+|[(?<!pattern)](#(?<!pattern))| 反向否定预查，与正向否定预查类似，只是方向相反。例如"(?<!95\|98\|NT\|2000)Windows"能匹配"3.1Windows"中的"Windows"，但不能匹配"2000Windows"中的"Windows"。|
+|[x\|y](#x\|y)|匹配 x 或 y。例如，'z\|food' 能匹配 "z" 或 "food"。'(z\|f)ood' 则匹配 "zood" 或 "food"。|
+|[\[xyz\]](#\[xyz\])	| 字符集合。匹配所包含的任意一个字符。例如， '[abc]' 可以匹配 "plain" 中的 'a'。|
+|[\[^xyz\]](#\[^xyz\])	| 负值字符集合。匹配未包含的任意字符。例如， '[^abc]' 可以匹配 "plain" 中的'p'、'l'、'i'、'n'。|
+|[\[a-z\]](#\[a-z\])	| 字符范围。匹配指定范围内的任意字符。例如，'[a-z]' 可以匹配 'a' 到 'z' 范围内的任意小写字母字符。|
+|[\[^a-z\]](#\[^a-z\])	| 负值字符范围。匹配任何不在指定范围内的任意字符。例如，'[^a-z]' 可以匹配任何不在 'a' 到 'z' 范围内的任意字符。|
 |\b	| 匹配一个单词边界，也就是指单词和空格间的位置。例如， 'er\b' 可以匹配"never" 中的 'er'，但不能匹配 "verb" 中的 'er'。|
 |\B	| 匹配非单词边界。'er\B' 能匹配 "verb" 中的 'er'，但不能匹配 "never" 中的 'er'。|
 |\cx | 匹配由 x 指明的控制字符。例如， \cM 匹配一个 Control-M 或回车符。x 的值必须为 A-Z 或 a-z 之一。否则，将 c 视为一个原义的 'c' 字符。|
@@ -221,5 +221,142 @@
     'aaaindustry\nbbbindustry'.match(/.{3,4}industry/g); // ["aaaindustry", "bbbindustry"]
 ```
 
+## [(pattern)](#(pattern))
+
+<i id="(pattern)"></i>
+匹配一个pattern的表示式，并且保留该表达式匹配到的字符。
+
+js中使用match方法
+如果未使用g标志，则仅返回第一个完整匹配及其相关的捕获组（Array）。 在这种情况下，返回的项目将具有如下所述的其他属性
+
+    groups: 一个捕获组数组 或 undefined（如果没有定义命名捕获组）
+    index: 匹配的结果的开始位置
+    input: 搜索的字符串
+    Array第一个元素是匹配字符串，第二个元素是捕获的字符串
+    
+如果使用g标志，则返回都有的匹配字符数组（Array）
+
+
+```javascript
+    "i am happy".match(/(\S+\b)/); // ["i", "i", index: 0, input: "i am happy", groups: undefined] 未使用g标志也没有命名捕获组
+    "2020-09-20".match(/(?<year>\d+)-(?<month>\d+)-(?<day>\d+)/) // (?<name>pattern) 对捕获组命名 
+    // ["2020-09-20", "2020", "09", "20", index: 0, input: "2020-09-20", groups: {…}]
+    // group: {year: "2020", month: "09", day: "20"}
+    // 如果不进行命名也可以在RegExp对象中拿到捕获的内容
+     RegExp.$1; // 2020
+     "2020-09-20".replace(/(?<year>\d+)-(?<month>\d+)-(?<day>\d+)/, '$2-$3-$1') // "09-20-2020"
+     // replace方法中的$1等同 RegExp.$1
+```
+
+## [(?:pattern)](#(?:pattern))
+
+<i id="(?:pattern)"></i>
+匹配一个pattern的表示式，非捕获，但是不保留该表达式匹配到的字符。
+
+```javascript
+    "i am happy".match(/(?:\S+\b)/); // ["i", index: 0, input: "i am happy", groups: undefined]
+    "2020-09-20".match(/(?:\d+)-(?:\d+)-(?:\d+)/); // ["2020-09-20", index: 0, input: "2020-09-20", groups: undefined]
+    "industry".match(/industr(?:y|ies)/) // 仅仅是为了或的字符查找，不捕获匹配类型
+```
+
+## [(?=pattern)](#(?=pattern))
+
+<i id="(?=pattern)"></i>
+正向肯定预查，非捕获，匹配一个pattern的表示式, 然后开始匹配左边的字符串。匹配字符不包含pattern。
+
+```javascript
+    "i am happy".match(/i (?=\S+\b)/); // ["i ", index: 0, input: "i am happy", groups: undefined]
+    "start 2020-09-20".match(/start (?=\d+)-(?:\d+)-(?:\d+)/); // ["2020-09-20", index: 0, input: "2020-09-20", groups: undefined]
+```
+
+## [(?!pattern)](#(?!pattern))
+
+<i id="(?!pattern)"></i>
+正向否定预查，非捕获，不匹配一个pattern的表示式, 然后开始匹配左边的字符串。匹配字符不包含pattern。
+
+```javascript
+    "i am happy i ".match(/i (?!\S+\b)/); // ["i ", index: 16, input: "i am happy i ", groups: undefined]
+    "start aa-09-20 start 2020-09-20".match(/start (?!\d+-\d+-\d+)/); // ["start ", index: 0, input: "start aa-09-20 start 2020-09-20", groups: undefined]
+    // 不是日期的字符串左边匹配的内容
+```
+
+
+## [(?<=pattern)](#(?<=pattern))
+
+<i id="(?=pattern)"></i>
+反向肯定预查，非捕获，匹配一个pattern的表示式, 然后开始匹配右边的字符串。匹配字符不包含pattern。
+
+```javascript
+    "i am happy".match(/(?<=\S+) happy/); // [" happy", index: 4, input: "i am happy", groups: undefined]
+    "2020-09-20 end".match(/(?<=\d+)-(?:\d+)-(?:\d+) end/); // ["-09-20 end", index: 4, input: "2020-09-20 end", groups: undefined]
+    "sss\n 2020-09-20 end".match(/.*(?<=\d+)-(?:\d+)-(?:\d+) end/); // [" 2020-09-20 end", index: 4, input: "sss↵ 2020-09-20 end", groups: undefined]
+```
+
+## [(?<!pattern)](#(?<!pattern))
+
+<i id="(?!pattern)"></i>
+反向否定预查，非捕获，不匹配一个pattern的表示式, 然后开始匹配右边的字符串。匹配字符不包含pattern。
+
+```javascript
+    " happy i am happy".match(/(?<!\S+) happy/); // [" happy", index: 0, input: " happy i am happy", groups: undefined]
+```
+
+## [x\|y](#x\|y)
+
+<i id="x\|y"></i>
+或，包含多种匹配表达式
+
+```javascript
+    "window2003".match(/window(?:2003|2009)/); // ["window2003", index: 0, input: "window2003", groups: undefined]
+```
+
+## [\[xyz\]](#\[xyz\])
+
+<i id="\[xyz\]"></i>
+可包含罗列的字符集合
+
+```javascript
+    "2020-09-20".match(/[0123456789]+/) // ["2020", index: 0, input: "2020-09-20", groups: undefined]
+```
+
+## [\[^xyz\]](#\[^xyz\])
+
+<i id="\[^xyz\]"></i>
+不包含罗列的字符集合
+
+```javascript
+    "2020-09-20".match(/[^20]+/) // ["-", index: 4, input: "2020-09-20", groups: undefined]
+```
+
+## [\[a-z\]](#\[a-z\])
+
+<i id="\[^xyz\]"></i>
+包含指定范围的字符集合
+
+```javascript
+    "2020-09-20".match(/[0-9]+/) // ["2020", index: 0, input: "2020-09-20", groups: undefined]
+```
+
+## [\[^a-z\]](#\[^a-z\])
+
+<i id="\[^xyz\]"></i>
+不包含指定范围的字符集合
+
+```javascript
+    "2020-09-20".match(/[^0-9]+/) // ["-", index: 4, input: "2020-09-20", groups: undefined]
+```
+
+# 运算符优先级
+
+正则表达式从左到右进行计算，并遵循优先级顺序，这与算术表达式非常类似。
+相同优先级的从左到右进行运算，不同优先级的运算先高后低。下表从最高到最低说明了各种正则表达式运算符的优先级顺序：
+
+|运算符|描述|
+|-----|---|
+|\|转义符|
+|(),(?:),(?=),[]|圆括号和方括号|
+|*,+,?,{n},{n,}{n,m}|限定符|
+|^,$,\元字符，任何字符|定位点和序列|
+|\||替换，或操作|
 
 通用的一些模式匹配表达式
