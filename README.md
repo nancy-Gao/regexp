@@ -10,6 +10,8 @@
 |[g](#g)|	global，执行全局匹配（查找所有匹配而非在找到第一个匹配后停止）。|
 |[m](#m)|	multi line，执行多行匹配。|
 |[s](#s)|	默认情况下的圆点 . 是 匹配除换行符 \n 之外的任何字符，加上 s 修饰符之后, . 中包含换行符 \n。|
+|[u](#u)|	u使用unicode码的模式进行匹配。 es6语法|
+|[y](#y)|	执行“粘性(sticky)”搜索,匹配从目标字符串的当前位置开始。 es6语法|
 
 ## [i](#i)
 
@@ -56,12 +58,126 @@
 ## [s](#s)
 
 <i id="s"></i>
-默认情况下的圆点 . 是 匹配除换行符 \n 之外的任何字符，加上 s 之后, . 中包含换行符 \n。
+es6增加，默认情况下的圆点 . 是 匹配除换行符 \n 之外的任何字符，加上 s 之后, . 中包含换行符 \n。
 
 ```javascript
     var str="google\nrunoob\ntaobao";
     var n1=str.match(/google./);   // 没有使用 s，无法匹配\n null
     var n2=str.match(/runoob./s);  // 使用 s，匹配\n ["runoob\n"]，匹配直到到一行结束
+```
+
+## [u](#u)
+
+<i id="u"></i>
+ES6 对正则表达式添加了u修饰符，含义为“Unicode 模式”，用来正确处理大于\uFFFF的 Unicode 字符。也就是说，会正确处理四个字节的 UTF-16 编码
+
+```javascript
+    /^\uD83D/u.test('\uD83D\uDC2A') // false
+    /^\uD83D/.test('\uD83D\uDC2A') // true
+```
+\uD83D\uDC2A是一个四个字节的 UTF-16 编码，代表一个字符。但是，ES5 不支持四个字节的 UTF-16 编码，会将其识别为两个字符，导致第二行代码结果为true。加了u修饰符以后，ES6 就会识别其为一个字符，所以第一行代码结果为false。
+
+一旦加上u修饰符号，就会修改下面这些正则表达式的行为。
+
+（1）点字符
+
+点（.）字符在正则表达式中，含义是除了换行符以外的任意单个字符。对于码点大于0xFFFF的 Unicode 字符，点字符不能识别，必须加上u修饰符。
+
+
+```javascript
+    var s = '𠮷';
+    /^.$/.test(s) // false
+    /^.$/u.test(s) // true
+```
+
+上面代码表示，如果不添加u修饰符，正则表达式就会认为字符串为两个字符，从而匹配失败。
+
+（2）Unicode 字符表示法
+
+ES6 新增了使用大括号表示 Unicode 字符，这种表示法在正则表达式中必须加上u修饰符，才能识别当中的大括号，否则会被解读为量词。
+
+```javascript
+    /\u{61}/.test('a') // false
+    /\u{61}/u.test('a') // true
+    /\u{20BB7}/u.test('𠮷') // true
+```
+
+上面代码表示，如果不加u修饰符，正则表达式无法识别\u{61}这种表示法，只会认为这匹配 61 个连续的u。
+
+（3）量词
+
+使用u修饰符后，所有量词都会正确识别码点大于0xFFFF的 Unicode 字符。
+
+```javascript
+    /a{2}/.test('aa') // true
+    /a{2}/u.test('aa') // true
+    /𠮷{2}/.test('𠮷𠮷') // false
+    /𠮷{2}/u.test('𠮷𠮷') // true
+```
+
+（4）预定义模式
+
+u修饰符也影响到预定义模式，能否正确识别码点大于0xFFFF的 Unicode 字符。
+
+```javascript
+    /^\S$/.test('𠮷') // false
+    /^\S$/u.test('𠮷') // true
+```
+
+上面代码的\S是预定义模式，匹配所有非空白字符。只有加了u修饰符，它才能正确匹配码点大于0xFFFF的 Unicode 字符。
+
+利用这一点，可以写出一个正确返回字符串长度的函数。
+
+```javascript
+    function codePointLength(text) {
+      var result = text.match(/[\s\S]/gu);
+      return result ? result.length : 0;
+    }
+    
+    var s = '𠮷𠮷';
+    
+    s.length // 4
+    codePointLength(s) // 2
+```
+
+（5）i 修饰符
+
+有些 Unicode 字符的编码不同，但是字型很相近，比如，\u004B与\u212A都是大写的K。
+
+```javascript
+    /[a-z]/i.test('\u212A') // false
+    /[a-z]/iu.test('\u212A') // true
+```
+
+上面代码中，不加u修饰符，就无法识别非规范的K字符。
+
+（6）转义
+
+没有u修饰符的情况下，正则中没有定义的转义（如逗号的转义\,）无效，而在u模式会报错。
+
+```javascript
+    /\,/ // /\,/
+    /\,/u // 报错 
+```
+
+上面代码中，没有u修饰符时，逗号前面的反斜杠是无效的，加了u修饰符就报错。
+
+## [y](#y)
+
+<i id="y"></i>
+ES6 还为正则表达式添加了y修饰符，叫做“粘连”（sticky）修饰符。
+y修饰符的作用与g修饰符类似，也是全局匹配，后一次匹配都从上一次匹配成功的下一个位置开始。不同之处在于，g修饰符只要剩余位置中存在匹配就可，而y修饰符确保匹配必须从剩余的第一个位置开始，这也就是“粘连”的涵义。
+
+```javascript
+    var s = 'aaa_aa_a';
+    var r1 = /a+/g;
+    var r2 = /a+/y;
+    
+    r1.exec(s) // ["aaa"]
+    r2.exec(s) // ["aaa"]
+    
+    r1.exec(s) // ["aa"]
+    r2.exec(s) // null
 ```
 
 ## 元字符
@@ -80,10 +196,10 @@
 |[.](#.)| 匹配除换行符（\n、\r）之外的任何单个字符。要匹配包括 '\n' 在内的任何字符，请使用像"(.|\\n)"的模式。|
 |[(pattern)](#(pattern))|匹配 pattern 并获取这一匹配。所获取的匹配可以从产生的 Matches 集合得到，在JScript 中则使用 $1…$9 属性。要匹配圆括号字符，请使用 '\\(' 或 '\\)'。|
 |[(?:pattern)](#(?pattern))| 匹配 pattern 但不获取匹配结果，也就是说这是一个非获取匹配，不进行存储供以后使用。这在使用 "或" 字符 (\|) 来组合一个模式的各个部分是很有用。例如， 'industr(?:y\|ies) 就是一个比 'industry\|industries' 更简略的表达式。|
-|[(?=pattern)](#(?=pattern))| 正向肯定预查（look ahead positive assert），在任何匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，"Windows(?=95\|98\|NT\|2000)"能匹配"Windows2000"中的"Windows"，但不能匹配"Windows3.1"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
-|[(?!pattern)](#(?!pattern))| 正向否定预查(negative assert)，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如"Windows(?!95\|98\|NT\|2000)"能匹配"Windows3.1"中的"Windows"，但不能匹配"Windows2000"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
-|[(?<=pattern)](#(?<=pattern))| 反向(look behind)肯定预查，与正向肯定预查类似，只是方向相反。例如，"(?<=95\|98\|NT\|2000)Windows"能匹配"2000Windows"中的"Windows"，但不能匹配"3.1Windows"中的"Windows"。|
-|[(?<!pattern)](#(?<!pattern))| 反向否定预查，与正向否定预查类似，只是方向相反。例如"(?<!95\|98\|NT\|2000)Windows"能匹配"3.1Windows"中的"Windows"，但不能匹配"2000Windows"中的"Windows"。|
+|[(?=pattern)](#(?=pattern))| 先行断言（look ahead positive assert），在任何匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如，"Windows(?=95\|98\|NT\|2000)"能匹配"Windows2000"中的"Windows"，但不能匹配"Windows3.1"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
+|[(?!pattern)](#(?!pattern))| 先行否定断言(negative assert)，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如"Windows(?!95\|98\|NT\|2000)"能匹配"Windows3.1"中的"Windows"，但不能匹配"Windows2000"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
+|[(?<=pattern)](#(?<=pattern))| 后行断言(look behind)，与先行断言类似，只是方向相反。例如，"(?<=95\|98\|NT\|2000)Windows"能匹配"2000Windows"中的"Windows"，但不能匹配"3.1Windows"中的"Windows"。|
+|[(?<!pattern)](#(?<!pattern))| 后行否定断言，与先行否定断言类似，只是方向相反。例如"(?<!95\|98\|NT\|2000)Windows"能匹配"3.1Windows"中的"Windows"，但不能匹配"2000Windows"中的"Windows"。|
 |[x\|y](#x\|y)|匹配 x 或 y。例如，'z\|food' 能匹配 "z" 或 "food"。'(z\|f)ood' 则匹配 "zood" 或 "food"。|
 |[\[xyz\]](#\[xyz\])	| 字符集合。匹配所包含的任意一个字符。例如， '[abc]' 可以匹配 "plain" 中的 'a'。|
 |[\[^xyz\]](#\[^xyz\])	| 负值字符集合。匹配未包含的任意字符。例如， '[^abc]' 可以匹配 "plain" 中的'p'、'l'、'i'、'n'。|
@@ -262,7 +378,7 @@ js中使用match方法
 ## [(?=pattern)](#(?=pattern))
 
 <i id="(?=pattern)"></i>
-正向肯定预查，非捕获，匹配一个pattern的表示式, 然后开始匹配左边的字符串。匹配字符不包含pattern。
+先行断言，非捕获，匹配一个pattern的表示式, 然后开始匹配左边的字符串。匹配字符不包含pattern。
 
 ```javascript
     "i am happy".match(/i (?=\S+\b)/); // ["i ", index: 0, input: "i am happy", groups: undefined]
@@ -272,7 +388,7 @@ js中使用match方法
 ## [(?!pattern)](#(?!pattern))
 
 <i id="(?!pattern)"></i>
-正向否定预查，非捕获，不匹配一个pattern的表示式, 然后开始匹配左边的字符串。匹配字符不包含pattern。
+先行否定断言，非捕获，不匹配一个pattern的表示式, 然后开始匹配左边的字符串。匹配字符不包含pattern。
 
 ```javascript
     "i am happy i ".match(/i (?!\S+\b)/); // ["i ", index: 16, input: "i am happy i ", groups: undefined]
@@ -284,7 +400,7 @@ js中使用match方法
 ## [(?<=pattern)](#(?<=pattern))
 
 <i id="(?=pattern)"></i>
-反向肯定预查，非捕获，匹配一个pattern的表示式, 然后开始匹配右边的字符串。匹配字符不包含pattern。
+后行断言，非捕获，匹配一个pattern的表示式, 然后开始匹配右边的字符串。匹配字符不包含pattern。
 
 ```javascript
     "i am happy".match(/(?<=\S+) happy/); // [" happy", index: 4, input: "i am happy", groups: undefined]
@@ -295,7 +411,7 @@ js中使用match方法
 ## [(?<!pattern)](#(?<!pattern))
 
 <i id="(?!pattern)"></i>
-反向否定预查，非捕获，不匹配一个pattern的表示式, 然后开始匹配右边的字符串。匹配字符不包含pattern。
+后行否定断言，非捕获，不匹配一个pattern的表示式, 然后开始匹配右边的字符串。匹配字符不包含pattern。
 
 ```javascript
     " happy i am happy".match(/(?<!\S+) happy/); // [" happy", index: 0, input: " happy i am happy", groups: undefined]
@@ -358,6 +474,25 @@ js中使用match方法
 |*,+,?,{n},{n,}{n,m}|限定符|
 |^,$,\元字符，任何字符|定位点和序列|
 |\||替换，或操作|
+
+# JavaScript 的正则表达式方法
+
+RegExp.test: 返回 true 或 false。
+RegExp.exec: 它返回一个数组（未匹配到则返回 null
+String.match: 返回一个数组，在未匹配到时会返回 null
+String.matchAll: 回一个迭代器（iterator）
+String.replace: 返回使用替换字符串替换掉匹配到的子字符串的字符串
+String.search: 返回匹配到的位置索引，或者在失败时返回-1
+String.split：返回分隔后的子字符串存储到数组
+
+## 创建正则表达式
+
+````javascript
+    var re = /ab+c/;
+    var re = new RegExp('ab+c');
+````
+
+
 
 
 
