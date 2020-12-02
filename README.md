@@ -34,11 +34,11 @@
 |[(?!pattern)](#(?!pattern))| 先行否定断言(negative assert)，在任何不匹配pattern的字符串开始处匹配查找字符串。这是一个非获取匹配，也就是说，该匹配不需要获取供以后使用。例如"Windows(?!95\|98\|NT\|2000)"能匹配"Windows3.1"中的"Windows"，但不能匹配"Windows2000"中的"Windows"。预查不消耗字符，也就是说，在一个匹配发生后，在最后一次匹配之后立即开始下一次匹配的搜索，而不是从包含预查的字符之后开始。|
 |[(?<=pattern)](#(?<=pattern))| 后行断言(look behind)，与先行断言类似，只是方向相反。例如，"(?<=95\|98\|NT\|2000)Windows"能匹配"2000Windows"中的"Windows"，但不能匹配"3.1Windows"中的"Windows"。|
 |[(?<!pattern)](#(?<!pattern))| 后行否定断言，与先行否定断言类似，只是方向相反。例如"(?<!95\|98\|NT\|2000)Windows"能匹配"3.1Windows"中的"Windows"，但不能匹配"2000Windows"中的"Windows"。|
-|[x\|y](#x\|y)|匹配 x 或 y。例如，'z\|food' 能匹配 "z" 或 "food"。'(z\|f)ood' 则匹配 "zood" 或 "food"。|
-|[\[xyz\]](#\[xyz\])	| 字符集合。匹配所包含的任意一个字符。例如， '[abc]' 可以匹配 "plain" 中的 'a'。|
-|[\[^xyz\]](#\[^xyz\])	| 负值字符集合。匹配未包含的任意字符。例如， '[^abc]' 可以匹配 "plain" 中的'p'、'l'、'i'、'n'。|
-|[\[a-z\]](#\[a-z\])	| 字符范围。匹配指定范围内的任意字符。例如，'[a-z]' 可以匹配 'a' 到 'z' 范围内的任意小写字母字符。|
-|[\[^a-z\]](#\[^a-z\])	| 负值字符范围。匹配任何不在指定范围内的任意字符。例如，'[^a-z]' 可以匹配任何不在 'a' 到 'z' 范围内的任意字符。|
+|[x\|y](#xy)|匹配 x 或 y。例如，'z\|food' 能匹配 "z" 或 "food"。'(z\|f)ood' 则匹配 "zood" 或 "food"。|
+|[\[xyz\]](#xyz)	| 字符集合。匹配所包含的任意一个字符。例如， '[abc]' 可以匹配 "plain" 中的 'a'。|
+|[\[^xyz\]](#^xyz)	| 负值字符集合。匹配未包含的任意字符。例如， '[^abc]' 可以匹配 "plain" 中的'p'、'l'、'i'、'n'。|
+|[\[a-z\]](#a-z)	| 字符范围。匹配指定范围内的任意字符。例如，'[a-z]' 可以匹配 'a' 到 'z' 范围内的任意小写字母字符。|
+|[\[^a-z\]](#^a-z))	| 负值字符范围。匹配任何不在指定范围内的任意字符。例如，'[^a-z]' 可以匹配任何不在 'a' 到 'z' 范围内的任意字符。|
 |\b	| 匹配一个单词边界，也就是指单词和空格间的位置。例如， 'er\b' 可以匹配"never" 中的 'er'，但不能匹配 "verb" 中的 'er'。|
 |\B	| 匹配非单词边界。'er\B' 能匹配 "verb" 中的 'er'，但不能匹配 "never" 中的 'er'。|
 |\cx | 匹配由 x 指明的控制字符。例如， \cM 匹配一个 Control-M 或回车符。x 的值必须为 A-Z 或 a-z 之一。否则，将 c 视为一个原义的 'c' 字符。|
@@ -415,7 +415,7 @@ js中使用match方法
 
 ## [(?<=pattern)](#(?<=pattern))
 
-<i id="(?=pattern)"></i>
+<i id="(?<=pattern)"></i>
 后行断言，非捕获，匹配一个pattern的表示式, 然后开始匹配右边的字符串。匹配字符不包含pattern。
 
 ```javascript
@@ -426,52 +426,52 @@ js中使用match方法
 
 ## [(?<!pattern)](#(?<!pattern))
 
-<i id="(?!pattern)"></i>
+<i id="(?<!pattern)"></i>
 后行否定断言，非捕获，不匹配一个pattern的表示式, 然后开始匹配右边的字符串。匹配字符不包含pattern。
 
 ```javascript
     " happy i am happy".match(/(?<!\S+) happy/); // [" happy", index: 0, input: " happy i am happy", groups: undefined]
 ```
 
-## [x\|y](#x\|y)
+## [x\|y](#xy)
 
-<i id="x\|y"></i>
+<i id="xy"></i>
 或，包含多种匹配表达式
 
 ```javascript
     "window2003".match(/window(?:2003|2009)/); // ["window2003", index: 0, input: "window2003", groups: undefined]
 ```
 
-## [\[xyz\]](#\[xyz\])
+## [\[xyz\]](#xyz)
 
-<i id="\[xyz\]"></i>
+<i id="xyz"></i>
 可包含罗列的字符集合
 
 ```javascript
     "2020-09-20".match(/[0123456789]+/) // ["2020", index: 0, input: "2020-09-20", groups: undefined]
 ```
 
-## [\[^xyz\]](#\[^xyz\])
+## [\[^xyz\]](#^xyz)
 
-<i id="\[^xyz\]"></i>
+<i id="^xyz"></i>
 不包含罗列的字符集合
 
 ```javascript
     "2020-09-20".match(/[^20]+/) // ["-", index: 4, input: "2020-09-20", groups: undefined]
 ```
 
-## [\[a-z\]](#\[a-z\])
+## [\[a-z\]](#a-z)
 
-<i id="\[^xyz\]"></i>
+<i id="a-z"></i>
 包含指定范围的字符集合
 
 ```javascript
     "2020-09-20".match(/[0-9]+/) // ["2020", index: 0, input: "2020-09-20", groups: undefined]
 ```
 
-## [\[^a-z\]](#\[^a-z\])
+## [\[^a-z\]](#^a-z)
 
-<i id="\[^xyz\]"></i>
+<i id="^a-z"></i>
 不包含指定范围的字符集合
 
 ```javascript
