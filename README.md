@@ -400,6 +400,12 @@ js中使用match方法
     "i am happy".match(/i (?=\S+\b)/); // ["i ", index: 0, input: "i am happy", groups: undefined]
     "start 2020-09-20".match(/start (?=\d+)-(?:\d+)-(?:\d+)/); // ["2020-09-20", index: 0, input: "2020-09-20", groups: undefined]
 ```
+检测获取同一种文件后缀的文件名
+
+```javascript
+    'd.jpg'.match(/\w(?=\.jpg)/);
+     // ["d"]
+```
 
 ## [(?!pattern)](#(?!pattern))
 
@@ -412,6 +418,12 @@ js中使用match方法
     // 不是日期的字符串左边匹配的内容
 ```
 
+检测不是指定文件后缀的文件
+```javascript
+    'c.html'.match(/.+(?!=\.jpg,?)/g)
+    // ["c.html"]
+```
+
 
 ## [(?<=pattern)](#(?<=pattern))
 
@@ -422,6 +434,16 @@ js中使用match方法
     "i am happy".match(/(?<=\S+) happy/); // [" happy", index: 4, input: "i am happy", groups: undefined]
     "2020-09-20 end".match(/(?<=\d+)-(?:\d+)-(?:\d+) end/); // ["-09-20 end", index: 4, input: "2020-09-20 end", groups: undefined]
     "sss\n 2020-09-20 end".match(/.*(?<=\d+)-(?:\d+)-(?:\d+) end/); // [" 2020-09-20 end", index: 4, input: "sss↵ 2020-09-20 end", groups: undefined]
+```
+
+获取ua的安卓版本号码
+```javascript
+    'Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Mobile Safari/537.36'.match(/(?<=android\s)\d\.\d/i)
+    // ["5.0", index: 28, input: "Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LR…e Gecko) Chrome/86.0.4240.80 Mobile Safari/537.36", groups: undefined]
+```
+获取document
+```javascript
+
 ```
 
 ## [(?<!pattern)](#(?<!pattern))
